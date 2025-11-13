@@ -15,8 +15,9 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 
 public class CategoryController {
-    @Autoriwed
+    @Autowired
     private CategoryService categoryService;
+
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
     public ResponseEntity<List<Category>> getAllCategories() {
@@ -40,7 +41,7 @@ public class CategoryController {
     public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category ){
         return ResponseEntity.ok(categoryService.update(id, category));
     }
-    
+
     @DeleteMapping(value ="/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Category> deleteCategory(@PathVariable Long id, @RequestBody Category category) {
