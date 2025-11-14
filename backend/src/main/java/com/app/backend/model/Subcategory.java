@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.lang.annotation.Inherited;
-import java.util.list;
+import java.util.List;
 
 @Data
 @Entity
@@ -67,7 +66,7 @@ public class Subcategory {
         return category;
     }
 
-    public void setCategory (List<Category> category){
+    public void setCategory (Category category){
         this.category = category;
     }
 }

@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.lang.annotation.Inherited;
-import java.util.list;
+import java.util.List;
 
 @Data
 @Entity
@@ -27,9 +26,9 @@ public class Category {
     @Column(nullable = false )
     private Boolean active = true;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.All)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @JsonIgnore 
-    private list<subcategory> subcategories;
+    private List<Subcategory> subcategories;
 
 
      public Long getId(){
@@ -40,7 +39,7 @@ public class Category {
         this.name = name;
     }
 
-    public Void setDescription (String description){
+    public void setDescription (String description){
         this.description = description;
     }
      
@@ -48,7 +47,7 @@ public class Category {
         return description;
     }
 
-    public Void setActive (Boolean active){
+    public void setActive (Boolean active){
         this.active = active;
     }
 
@@ -56,11 +55,11 @@ public class Category {
         return active;
     }
 
-    public List<subcategory> getSubcategories(){
+    public List<Subcategory> getSubcategories(){
         return subcategories;
     }
 
-    public void setSubcategories(List<subcategory> subcategories){
+    public void setSubcategories(List<Subcategory> subcategories){
         this.subcategories = subcategories;
     }   
 }

@@ -1,16 +1,16 @@
 package com.app.backend.controller;
 
-import com.app.backend.dto.loginRequest;
-import com.app.backend.dto.loginResponse;
+import com.app.backend.dto.LoginRequest;
+import com.app.backend.dto.LoginResponse;
 import com.app.backend.model.User;                                          
-import com.app.backend.Repository.|UserRepository;
-import com.app.backend.security.JwTokenProvider;
+import com.app.backend.repository.UserRepository;
+import com.app.backend.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.username|passwordauthenticationtoken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.securitycontextholder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,20 +27,19 @@ public class AuthController {
     private UserRepository userRepository;
 
     @PostMapping("/login", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> login(@RequestBody loginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try{
         Authentication authentication = authenticationManager.authenticate(
-                new usernamePasswordAuthenticationToken (
+                new UsernamePasswordAuthenticationToken(
                     loginRequest.getUsername(),
-                    loginRequest.getPassword()))
-                    SecurityContextHolder.getContext().
-                    setAuthentication(authentication);
+                    loginRequest.getPassword()));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                    User user = userRepository.findByUsername(loginRequest.getUsername()).orElseTjrow(()-> new RuntimeException("Usuario no encontrado"));
+                    User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
 
 
-                    return ResponseEntity.ok(new loginResponse(
-                       jwt, user ));
+                    return ResponseEntity.ok(new LoginResponse(
+                       jwt, user));
         } catch (Exception e) {
         return ResponseEntity.badRequest().body("{\"error\": \"Credenciales inválidas\"}");
         }

@@ -4,8 +4,7 @@ import  com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.lang.annotation.Inherited;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "users")

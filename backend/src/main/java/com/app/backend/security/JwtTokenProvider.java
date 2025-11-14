@@ -26,9 +26,9 @@ public String generateToken(Authentication authentication) {
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
 
         return Jwts.builder()
-                .Subject(username)
-                .IssuedAt(now)
-                .Expiration(expiryDate)
+                .subject(username)
+                .issuedAt(now)
+                .expiration(expiryDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -49,7 +49,7 @@ public String generateToken(Authentication authentication) {
             Jwts.parser()
            .verifyWith(getSigningKey())
             .build()
-            .parseSignedClaims(authToken);
+            .parseSignedClaims(token);
             return true; 
             } catch (JwtException | IllegalArgumentException e) {
             return false;

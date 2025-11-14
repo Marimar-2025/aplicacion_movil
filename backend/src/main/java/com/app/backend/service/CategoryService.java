@@ -27,14 +27,14 @@ public class CategoryService {
     
 
     public Category update(Long id, Category categoryDetails){
-        Category category = categoryRepository.findById(id)
+        Category category = categoryRepository.findById(id).orElseThrow(()-> new RuntimeException("Categoría no encontrada"));
         category.setName(categoryDetails.getName());
         category.setDescription(categoryDetails.getDescription());
         category.setActive(categoryDetails.getActive());
         return categoryRepository.save(category);
     }
     public void delete(Long id) {
-        Category category = findById(id)
+        Category category = findById(id);
         categoryRepository.delete(category);
     }
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UFT-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -25,18 +25,17 @@
 <dependencies>
     <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-stater-web</artifactId>
+        <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
     <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-stater-data-jpa</artifactId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
 
     <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-stater-security</artifactId>
-        <scope>runtime</scope>
+        <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
 
     <dependency>
@@ -48,8 +47,7 @@
     <dependency>
         <groupId>io.jsonwebtoken</groupId>
         <artifactId>jjwt-api</artifactId>
-        <version>0.12.5
-        </version>
+        <version>0.12.5</version>
     </dependency>
 
     <dependency>
@@ -60,7 +58,7 @@
     </dependency>
 
     <dependency>
-        <groupId>org.projectlombot</groupId>
+        <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
         <optional>true</optional>
     </dependency>
@@ -68,7 +66,7 @@
 
     <dependency>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-stater-validation</artifactId>
+        <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
 
     <dependency>
