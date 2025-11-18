@@ -3,6 +3,7 @@ package com.app.backend.controller;
 import com.app.backend.model.User;
 import com.app.backend.service.UserService;
 import com.app.backend.dto.MessagerResponse;
+import com.app.backend.dto.UserCreateRequest;
 import com.app.backend.dto.UserUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,8 +31,14 @@ public class UsersController {
         return ResponseEntity.ok(userService.findById(id));     
     }
 
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
+    public ResponseEntity<User> createUser(@RequestBody UserCreateRequest request) {
+        return ResponseEntity.ok(userService.createUser(request));
+    }
+
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequest request) {
         return ResponseEntity.ok(userService.update(id, request));
     }
