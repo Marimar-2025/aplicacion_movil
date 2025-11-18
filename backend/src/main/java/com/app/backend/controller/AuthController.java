@@ -29,6 +29,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
+            System.out.println("=== Intento de login ===");
+            System.out.println("Username recibido: " + loginRequest.getUsername());
+            System.out.println("Password recibido: " + loginRequest.getPassword());
+            
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getUsername(),
@@ -41,8 +45,11 @@ public class AuthController {
 
             String jwt = tokenProvider.generateToken(authentication);
 
+            System.out.println("Login exitoso para: " + loginRequest.getUsername());
             return ResponseEntity.ok(new LoginResponse(jwt, user));
         } catch (Exception e) {
+            System.out.println("Error en login: " + e.getMessage());
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("{\"error\": \"Credenciales inválidas\"}");
         }
     }
