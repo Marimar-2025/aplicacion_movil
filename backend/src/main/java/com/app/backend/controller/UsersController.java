@@ -20,25 +20,25 @@ public class UsersController {
     private UserService userService;
     
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINATOR')")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.findAll());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINATOR')")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findById(id));     
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINATOR')")
     public ResponseEntity<User> createUser(@RequestBody UserCreateRequest request) {
         return ResponseEntity.ok(userService.createUser(request));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINATOR')")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserUpdateRequest request) {
         return ResponseEntity.ok(userService.update(id, request));
     }

@@ -18,37 +18,37 @@ public class ProductController {
     private ProductService productService;
     
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINATOR')")
     public ResponseEntity<List<Product>> getAllProducts() {
         return ResponseEntity.ok(productService.findAll());
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINATOR')")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.findById(id));
     }
 
     @GetMapping("/category/{categoryId}")
-    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINATOR')")
     public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable Long categoryId) {
         return ResponseEntity.ok(productService.findByCategoryId(categoryId));
     }
 
     @GetMapping("/subcategory/{subcategoryId}")
-    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINATOR')")
     public ResponseEntity<List<Product>> getProductsBySubcategoryId(@PathVariable Long subcategoryId) {
         return ResponseEntity.ok(productService.findBySubcategoryId(subcategoryId));
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINATOR')")
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         return ResponseEntity.ok(productService.create(product));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','COORDINATOR')")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
         return ResponseEntity.ok(productService.update(id, product));
     }

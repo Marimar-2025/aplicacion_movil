@@ -17,7 +17,7 @@ public class StatsController {
     private StatsService statsService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINADOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COORDINATOR')")
     public ResponseEntity<Map<String, Long>> getStats() {
         return ResponseEntity.ok(statsService.getStats());
     }
