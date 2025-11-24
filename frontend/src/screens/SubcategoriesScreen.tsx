@@ -4,14 +4,43 @@ import { Picker } from "@react-native-picker/picker";
 import { subcategoriesStyles} from "../styles/SubcategoriesStyles";
 import { subcategoryService, authService, categoryService } from "../services/api";
 
+// Interfaces para mejor tipado
+interface Category {
+    id: number;
+    name: string;
+    description?: string;
+    active: boolean;
+}
+
+interface Subcategory {
+    id: number;
+    name: string;
+    description?: string;
+    active: boolean;
+    category: Category;
+}
+
+interface User {
+    id: number;
+    role: string;
+    name: string;
+}
+
+interface FormData {
+    name: string;
+    description: string;
+    categoryId: string;
+    active: boolean;
+}
+
 export default function SubcategoriesScreen(){
-    const [subcategories, setSubcategories] = useState<any[]>([]);
-    const [categories, setCategories] = useState<any[]>([]);
+    const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const [editing, setEditing] = useState<any>(null);
-    const [formData, setFormData] = useState({name : "", description: "", categoryId: "", active: true});
-    const [currentUser, setCurrentUser] = useState<any>(null);
+    const [editing, setEditing] = useState<Subcategory | null>(null);
+    const [formData, setFormData] = useState<FormData>({name : "", description: "", categoryId: "", active: true});
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
 
     useEffect (() => {
         loadSubcategories();
@@ -61,27 +90,27 @@ export default function SubcategoriesScreen(){
         try{
             const data ={
                 name: formData.name,
-                decription: formData.description,
+                description: formData.description,
                 active: formData.active,
                 category: {id: parseInt(formData.categoryId)}
             };
 
             if(editing){
-                await subcategoryService.update(editing.id, formData);
+                await subcategoryService.update(editing.id, data);
                 Alert.alert("Exito","subcategoria actualizada exitosamente");
             }else{
-                await subcategoryService.create(formData);
+                await subcategoryService.create(data);
                 Alert.alert("Exito", "subcategoria creada exitosamente");
-                setModalVisible(false);
-                resetForm();
-                loadSubcategories();
             }
+            setModalVisible(false);
+            resetForm();
+            loadSubcategories();
         }catch(error: any){
             Alert.alert("Error",error.response?.data?.message || "Error al guarar ");
         }
     };
 
-    const handleDelete = async (item: any) => {
+    const handleDelete = async (item: Subcategory) => {
         if(currentUser?.role !== "admin"){
             Alert.alert("Acceso denegado", "Solo los administradores pueden eliminar categorias");
             return;
@@ -104,9 +133,9 @@ export default function SubcategoriesScreen(){
         ]);
     };
 
-    const handleToggleActive = (item: any) => {
-        const action = item.active ? "Desactivar": "Activar";(
-        Alert.alert("Confirmar", `¿${action.charAt(0).toUpperCase()+ action.slice(1)} ${item.name}?`),
+    const handleToggleActive = (item: Subcategory) => {
+        const action = item.active ? "Desactivar": "Activar";
+        Alert.alert("Confirmar", `¿${action.charAt(0).toUpperCase()+ action.slice(1)} ${item.name}?`,
         [
             {text: "Cancelar", style: "cancel"},
             {
@@ -128,7 +157,7 @@ export default function SubcategoriesScreen(){
         ]);
     };
 
-    const openModal = (item: any = null) => {
+    const openModal = (item: Subcategory | null = null) => {
         if(item){
             setEditing(item);
             setFormData({name: item.name, description: item.description || "", categoryId: item.category?.id?.toString() || "",
@@ -173,34 +202,30 @@ export default function SubcategoriesScreen(){
                     </TouchableOpacity>
                 </View>
                     {/*subcategorias list */}
-            <FlatList data={categories}
+            <FlatList data={subcategories}
                 keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
                 refreshing={loading}
                 onRefresh={loadSubcategories}
                 style={subcategoriesStyles.list}
-                contentContainerStyle={subcategoriesStyles.listContainer}
+                contentContainerStyle={subcategoriesStyles.listContent}
                 showsVerticalScrollIndicator={false}
-                renderItem={({item}) =>{
+                renderItem={({item}: {item: Subcategory}) =>{
                     if(!item) return null;
                     return(
                         <View style={subcategoriesStyles.card}>
-                            <View style={subcategoriesStyles.cardHeader}>
+                            <View style={subcategoriesStyles.cardContent}>
                                     <Text style={subcategoriesStyles.cardTitle}>{item.name || "Sin nombre"} {!item.active && <Text style={{color: "#999"}}>(inactiva)</Text>}
                                     </Text>
-                                    <Text style={subcategoriesStyles.cardDescription}>{item.description || "Sin descripcion"}</Text>
+                                    <Text style={subcategoriesStyles.cardSubtitle}>{item.description || "Sin descripcion"}</Text>
                                     <Text style={subcategoriesStyles.cardMeta}> Categoria{item?.category?.name || "Sin categoria"}</Text>
                             </View>
                             <View style={subcategoriesStyles.cardActions}>
-                                <TouchableOpacity style={[subcategoriesStyles.actionButton, subcategoriesStyles.editButton]}onPress={() => openModal(item)}>
-                                    <Text style={subcategoriesStyles.actionButtonTetx}>Editar</Text>
+                                <TouchableOpacity style={[subcategoriesStyles.actionButton, subcategoriesStyles.editButton]} onPress={() => openModal(item)}>
+                                    <Text style={subcategoriesStyles.editButtonText}>Editar</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                                style={[subcategoriesStyles.activeButton, item.active ? subcategoriesStyles.deleteButton : subcategoriesStyles.
-                                                    editingButton
-                                                ]} onPress={() => handleToggleActive(item)}>
-                                                    <Text style={[subcategoriesStyles.actionButtonText, item.active ? subcategoriesStyles.deleteButtonText :
-                                                        subcategoriesStyles.editingButtonText
-                                                    ]}>
+                                                style={[subcategoriesStyles.actionButton, item.active ? subcategoriesStyles.deleteButton : subcategoriesStyles.editButton]} onPress={() => handleToggleActive(item)}>
+                                                    <Text style={item.active ? subcategoriesStyles.deleteButtonText : subcategoriesStyles.editButtonText}>
                                                         {item.active ? "Desactivar" : "Activar"}
                                                     </Text>
                                                 </TouchableOpacity>
@@ -208,7 +233,7 @@ export default function SubcategoriesScreen(){
                                                     <TouchableOpacity style={[subcategoriesStyles.actionButton,subcategoriesStyles.deleteButton]}
                                                     onPress={() => handleDelete(item)}
                                                     >
-                                                        <Text style={[subcategoriesStyles.actionButtonText, subcategoriesStyles.deleteButtonText]}>
+                                                        <Text style={subcategoriesStyles.deleteButtonText}>
                                                             Eliminar
                                                         </Text>
                                                     </TouchableOpacity>
@@ -220,7 +245,7 @@ export default function SubcategoriesScreen(){
                 ListEmptyComponent={!loading ?(
                     <View style={subcategoriesStyles.emptyContainer}>
                         <Text style={subcategoriesStyles.emptyText}> No hay Subcategorias</Text>
-                        <Text style={subcategoriesStyles.emptySubText}> Toca "Nueva" para nueva subcategoria</Text>
+                        <Text style={subcategoriesStyles.emptySubtext}> Toca "Nueva" para nueva subcategoria</Text>
                     </View>
                 ): null}>
             </FlatList>
@@ -228,7 +253,7 @@ export default function SubcategoriesScreen(){
 
             <Modal visible={modalVisible} animationType="slide" transparent={true}>
                 <View style={subcategoriesStyles.modalOverlay}>
-                    <View style={subcategoriesStyles.modalContext}>
+                    <View style={subcategoriesStyles.modalContent}>
                         <ScrollView showsVerticalScrollIndicator={false}>
                             <View style={subcategoriesStyles.modalHeader}>
                                 <Text style={subcategoriesStyles.modalTitle}>{editing ? "editar Subcategoria": "nueva Subcategoria"}</Text>
@@ -271,25 +296,17 @@ export default function SubcategoriesScreen(){
                                         </Picker>
 
                                     </View>
-                                    <TextInput style={[subcategoriesStyles.input, subcategoriesStyles.textArea]}
-                                    value={formData.description}
-                                    onChangeText={(text) => setFormData({...formData,description: text})}
-                                    placeholder="Descripcion"
-                                    placeholderTextColor="#999"
-                                    multiline
-                                    numberOfLines={3}
-                                    textAlignVertical="top"></TextInput>
                                 </View>
                             </View>
 
                             <View style={subcategoriesStyles.modalActions}>
-                                <TouchableOpacity style={[subcategoriesStyles.secundaryButton]}
+                                <TouchableOpacity style={subcategoriesStyles.secondaryButton}
                                 onPress={()=> setModalVisible(false)}>
-                                    <Text style={[subcategoriesStyles.secundaryButton]}>Cancelar</Text>
+                                    <Text style={subcategoriesStyles.secondaryButtonText}>Cancelar</Text>
                                 </TouchableOpacity>                                        
-                                <TouchableOpacity style={[subcategoriesStyles.primaryButton]}
+                                <TouchableOpacity style={subcategoriesStyles.primaryButton}
                                         onPress={handlesave}>
-                                            <Text style={[subcategoriesStyles.primaryButton]}>
+                                            <Text style={subcategoriesStyles.primaryButtonText}>
                                                 {editing ? "Actualizar": "Crear"}
                                             </Text>
                                 </TouchableOpacity>
